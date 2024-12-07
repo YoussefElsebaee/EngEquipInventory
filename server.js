@@ -1,20 +1,20 @@
 const express = require ('express');
 const app = express();
 
-const {handleAdminBackendApi}= require('./routes/AdminPrivate/API');
+const {handleAdminBackendApi}= require('./routes/private/AdminAPI');
 const {HandlePublicBackendApi}= require('./routes/public/API');
-const {handleStandardUserBackendApi}= require('./routes/UserPrivate/API');
+const {handleStandardUserBackendApi}= require('./routes/private/UserAPI');
 const {GetUser, Authenticate, AuthorizedAdmin, AuthorizedStandardUser}= require('./middleware/auth.js');
 
 app.use(Authenticate);
 
 HandlePublicBackendApi(app);
 
-app.use(Authenticate, AuthorizedAdmin);
+app.use(Authenticate, AuthorizedAdmin, GetUser);
 
 handleAdminBackendApi(app);
 
-app.use(Authenticate, AuthorizedStandardUser);
+app.use(Authenticate, AuthorizedStandardUser, GetUser);
 
 handleStandardUserBackendApi(app);
 
