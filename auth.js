@@ -1,23 +1,12 @@
-const db = require('../DataBase/db');
+const db = require('../connectors/db');
 
-async function GetUser(query){
-    try{
-    const result= await db.raw(query);
-
-    return result.rows;
-    }
-
-    catch(error){
-        console.error("the user data wasn't found in the data base", error.message);
-    }
-}
 
 async function Authenticate(req, res, next){
 
     const token= req.header('authorization');
 
     if(!token){
-        res.status(401).send('Access denied, no token provided');
+        res.status(401).send('hello');
     }
 
     try{
@@ -29,6 +18,19 @@ async function Authenticate(req, res, next){
 
     catch(EX){
         res.status(400).send('invalid token.');
+    }
+}
+
+async function GetUser(){
+    try{
+    UserId= req.user.userID;
+
+    return userID;
+    next();
+    }
+
+    catch(error){
+        console.error("the user data wasn't found in the data base", error.message);
     }
 }
 
