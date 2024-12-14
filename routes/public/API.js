@@ -19,7 +19,7 @@ function HandlePublicBackendApi(app){
 
     // validate the provided password against the password in the database
     // if invalid, send an unauthorized code
-    let user = await db.select('*').from('SEproject.users').where('email', email);
+    let user = await db.select('*').from('public.users').where('email', email);
 
     if (user.length == 0) {
       return res.status(400).send('user does not exist');
@@ -29,12 +29,11 @@ function HandlePublicBackendApi(app){
       // Compare password using bcrypt asynchronously
       const isMatch = await bcrypt.compare(password, user.password);
       if (!isMatch) {
-        return res.status(400).send('Password does not match');
+        return res.status(400).send('Password does not match ya youssef');
       }
   
 
-   
-    // set the expiry time as 30 minutes after the current time
+      // set the expiry time as 30 minutes after the current time
     const token = v4();
     const currentDateTime = new Date();
     const expiresAt = new Date(currentDateTime.getTime() + 18000000); // expire in 3 minutes
@@ -46,7 +45,7 @@ function HandlePublicBackendApi(app){
       expiresAt,
     };
     try {
-      await db('SEproject.session').insert(session);
+      await db('public.session').insert(session);
       // In the response, set a cookie on the client with the name "session_cookie"
       // and the value as the UUID we generated. We also set the expiration time.
       res.cookie("session_token", token, { expires: expiresAt, httpOnly: true })
@@ -58,10 +57,10 @@ function HandlePublicBackendApi(app){
 
     }
   }
-  );
-  console.log("here1");
+  )
+  
  app.post('/api/v1/user/new', async function(req, res) {
-          const userExists = await db.select('*').from('SEproject.users').where('email', req.body.email);
+          const userExists = await db.select('*').from('public.users').where('email', req.body.email);
           console.log("UE",userExists)
           if (userExists.length > 0) {
             return res.status(400).send('user exists');
@@ -70,15 +69,15 @@ function HandlePublicBackendApi(app){
           try {
             const newUser = req.body;
             newUser.password = await bcrypt.hash(newUser.password, 10);
-            const user = await db('SEproject.users').insert(newUser).returning('*');
+            const user = await db('public.users').insert(newUser).returning('*');
             console.log("user new",user);
             return res.status(200).json('User registerd succefully');
           } catch (e) {
             console.log(e.message);
             return res.status(400).send('Could not register user');
           }
-        })
-    
-        
+        }
+      )
+      
 }
 module.exports = {HandlePublicBackendApi};
