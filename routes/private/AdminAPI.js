@@ -8,7 +8,7 @@ async function checkadmin(req, res){
 
   const User= getUser(req);
 try {
-    if(User.role != 'standard_user'){
+    if(User.role != 'admin'){
       return res.status(400).send('Access denied. ONLY users have permission to perform this action.');
     }
 } catch (error){
